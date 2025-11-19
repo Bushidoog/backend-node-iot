@@ -18,12 +18,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.iot_vicente.R
 import com.example.iot_vicente.nav.Route
 import com.example.iot_vicente.ui.theme.Iot_vicenteTheme
+import androidx.compose.foundation.Image
 
 
 
@@ -43,6 +47,11 @@ fun LoginContent(
             .padding(20.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = "Logo",
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
         Text("Bienvenido", fontSize = 23.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(user, onUserChange, label = { Text("Usuario") }, modifier = Modifier.fillMaxWidth(),)
@@ -57,6 +66,8 @@ fun LoginContent(
         }
     }
 }
+
+
 @Composable
 fun LoginScreen(nav: NavController) {
     var user by remember { mutableStateOf("") }
