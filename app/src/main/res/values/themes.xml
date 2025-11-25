@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- 🔵 Tema del Splash -->
+    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
+        <!-- Ícono del splash -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+
+        <!-- Color de fondo -->
+        <item name="windowSplashScreenBackground">@color/purple_700</item>
+
+        <!-- Tema que se aplica después del splash -->
+        <item name="postSplashScreenTheme">@style/Theme.Iot_vicente</item>
+    </style>
+
+    <!-- 🔵 Tema principal de tu app (NO BORRAR) -->
     <style name="Theme.Iot_vicente" parent="android:Theme.Material.Light.NoActionBar" />
+
 </resources>

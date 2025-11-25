@@ -23,18 +23,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.iot_vicente.nav.Route
-
+import com.example.iot_vicente.viewmodel.AuthViewModel
 
 @Composable
-fun RegisterScreen(nav: NavController) {
-    // Variables de estado existentes
+fun RegisterScreen(
+    nav: NavController,
+    vm: AuthViewModel
+) {
     var name by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var pwd by remember { mutableStateOf("") }
 
-    // 1. Variables NUEVAS
-    var surname by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+    var errorMsg by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -45,7 +48,6 @@ fun RegisterScreen(nav: NavController) {
         Text("Crear cuenta", fontSize = 22.sp)
         Spacer(Modifier.height(16.dp))
 
-        // Campo Nombre
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -54,7 +56,6 @@ fun RegisterScreen(nav: NavController) {
         )
         Spacer(Modifier.height(8.dp))
 
-        // 2. Campo Apellido (NUEVO)
         OutlinedTextField(
             value = surname,
             onValueChange = { surname = it },
@@ -63,18 +64,15 @@ fun RegisterScreen(nav: NavController) {
         )
         Spacer(Modifier.height(8.dp))
 
-        // 3. Campo Teléfono (NUEVO)
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
             label = { Text("Teléfono") },
             modifier = Modifier.fillMaxWidth(),
-            // Opcional: Esto hace que el teclado sea solo numérico
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
         )
         Spacer(Modifier.height(8.dp))
 
-        // Campo Correo
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -83,7 +81,6 @@ fun RegisterScreen(nav: NavController) {
         )
         Spacer(Modifier.height(8.dp))
 
-        // Campo Contraseña
         OutlinedTextField(
             value = pwd,
             onValueChange = { pwd = it },
@@ -93,17 +90,32 @@ fun RegisterScreen(nav: NavController) {
         Spacer(Modifier.height(16.dp))
 
         Button(
-            onClick = { nav.navigate(Route.Login.path) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !loading,
+            onClick = {
+                loading = true
+
+                vm.register(
+                    name = name,
+                    email = email,
+                    pass = pwd,
+                    onSuccess = {
+                        loading = false
+                        nav.navigate(Route.Login.path)
+                    },
+                    onFail = { msg ->
+                        loading = false
+                        errorMsg = msg
+                    }
+                )
+            }
         ) {
-            Text("Crear cuenta")
+            Text(if (loading) "Cargando..." else "Crear cuenta")
+        }
+
+        errorMsg?.let {
+            Spacer(Modifier.height(10.dp))
+            Text(text = it, color = androidx.compose.ui.graphics.Color.Red)
         }
     }
-}
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    val navController = androidx.navigation.compose.rememberNavController()
-
-    RegisterScreen(nav = navController)
 }
