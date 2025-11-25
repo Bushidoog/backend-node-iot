@@ -58,21 +58,30 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose:2.8.0")
-    implementation("androidx.activity:activity-compose:1.9.2")
     // SplashScreen API (compatibilidad hacia atrás)
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
 // Compose
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.3")
 // Para manejar delay/cargas en Activity
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
 // (Opcional) Lottie para Compose
     implementation("com.airbnb.android:lottie-compose:6.4.0")
+    // Retrofit
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Retrofit para llamadas HTTP
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+// Convertidor JSON (usa Moshi o Gson, aquí Moshi)
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+// OkHttp logging (ver requests/responses en Logcat)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+// ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
+
 
 
 }
