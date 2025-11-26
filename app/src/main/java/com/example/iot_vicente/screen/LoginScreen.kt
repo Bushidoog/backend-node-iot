@@ -1,46 +1,39 @@
 package com.example.iot_vicente.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.iot_vicente.R
 import com.example.iot_vicente.nav.Route
-import com.example.iot_vicente.ui.theme.Iot_vicenteTheme
-import androidx.compose.foundation.Image
-
-
-
+import com.example.iot_vicente.viewmodel.AuthState
+import com.example.iot_vicente.viewmodel.AuthViewModel
 
 @Composable
 fun LoginContent(
-    user: String,
+    email: String,
     pass: String,
-    onUserChange: (String) -> Unit,
+    authState: AuthState,
+    onEmailChange: (String) -> Unit,
     onPassChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit
 ) {
+    val isLoading = authState is AuthState.Checking
+    val errorMessage = (authState as? AuthState.Error)?.message
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,47 +43,88 @@ fun LoginContent(
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = "Logo",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .size(120.dp)
+                .align(Alignment.CenterHorizontally)
         )
-        Text("Bienvenido", fontSize = 23.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(12.dp))
-        OutlinedTextField(user, onUserChange, label = { Text("Usuario") }, modifier = Modifier.fillMaxWidth(),)
+        Text(
+            "Bienvenido",
+            fontSize = 23.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(Modifier.height(20.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = onEmailChange,
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
         Spacer(Modifier.height(8.dp))
-        OutlinedTextField(pass, onPassChange, label = { Text("Contraseña") } )
+
+        OutlinedTextField(
+            value = pass,
+            onValueChange = onPassChange,
+            label = { Text("Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation()
+        )
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onLoginClick, modifier = Modifier.fillMaxWidth()) {
-            Text("Ingresar")
+
+        Button(
+            onClick = onLoginClick,
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (isLoading) "Ingresando..." else "Ingresar")
         }
-        TextButton(onClick = onRegisterClick, modifier = Modifier.align(Alignment.End)) {
+
+        if (errorMessage != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(errorMessage, color = MaterialTheme.colorScheme.error)
+        }
+
+        TextButton(
+            onClick = onRegisterClick,
+            modifier = Modifier.align(Alignment.End)
+        ) {
             Text("¿No tienes cuenta? Regístrate")
         }
     }
 }
 
-
 @Composable
-fun LoginScreen(nav: NavController) {
-    var user by remember { mutableStateOf("") }
+fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
+    var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
+    val authState by vm.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Authenticated) {
+            nav.navigate(Route.Home.path) {
+                popUpTo(Route.Login.path) { inclusive = true }
+            }
+        }
+    }
+
     LoginContent(
-        user, pass,
-        onUserChange = { user = it },
+        email = email,
+        pass = pass,
+        authState = authState,
+        onEmailChange = { email = it },
         onPassChange = { pass = it },
-        onLoginClick = { nav.navigate(Route.Home.path) },
+        onLoginClick = { vm.login(email.trim(), pass) },
         onRegisterClick = { nav.navigate(Route.Register.path) }
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun LoginContentPreview() {
-    Iot_vicenteTheme {
-        LoginContent(
-            user = "javier@demo.cl",
-            pass = "123456",
-            onUserChange = {},
-            onPassChange = {},
-            onLoginClick = {},
-            onRegisterClick = {}
-        )
-    }
+    val nav = rememberNavController()
+    LoginScreen(nav = nav)
 }

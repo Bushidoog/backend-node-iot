@@ -9,27 +9,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.iot_vicente.R
 import com.example.iot_vicente.screen.HomeScreen
 import com.example.iot_vicente.screen.LoginScreen
 import com.example.iot_vicente.screen.RegisterScreen
-// Asumo que tu ViewModel está en este paquete, ajusta si es necesario
+import com.example.iot_vicente.viewmodel.AuthState
 import com.example.iot_vicente.viewmodel.AuthViewModel
 import kotlinx.coroutines.delay
-
-// Lottie imports
-import com.airbnb.lottie.compose.*
-import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(showBackground = true)
 @Composable
@@ -41,15 +46,33 @@ fun AppNavGraph() {
 
     NavHost(navController = nav, startDestination = "splash") {
         composable("splash") {
+            val authState by authViewModel.authState.collectAsState()
+            var isAnimationFinished by remember { mutableStateOf(false) }
+
+            // Mostramos la animación Lottie
             SplashLottie {
-                nav.navigate(Route.Login.path) {
-                    popUpTo("splash") { inclusive = true }
+                isAnimationFinished = true
+            }
+
+            // Navegamos solo cuando la animación termine Y ya no estemos "Checking"
+            LaunchedEffect(isAnimationFinished, authState) {
+                if (isAnimationFinished && authState !is AuthState.Checking) {
+                    val destination = if (authState is AuthState.Authenticated) {
+                        Route.Home.path
+                    } else {
+                        Route.Login.path
+                    }
+                    
+                    nav.navigate(destination) {
+                        popUpTo("splash") { inclusive = true }
+                    }
                 }
             }
         }
+        
         composable(Route.Login.path) { LoginScreen(nav) }
 
-        // Ahora 'authViewModel' ya existe y se pasa correctamente
+        // Pasamos el authViewModel a RegisterScreen
         composable(Route.Register.path) { RegisterScreen(nav, authViewModel) }
 
         composable(Route.Home.path) { HomeScreen() }
@@ -81,13 +104,15 @@ fun SplashScreen(onFinish: () -> Unit) {
 @Composable
 fun SplashLottie(onFinish: () -> Unit) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
+    // Animación continua
     val animState = animateLottieCompositionAsState(
         composition = composition,
         iterations = LottieConstants.IterateForever
     )
 
+    // Esperamos un tiempo mínimo para mostrar el splash (ej: 2 seg)
     LaunchedEffect(composition) {
-        delay(1500L)
+        delay(2000L)
         onFinish()
     }
 
@@ -98,7 +123,7 @@ fun SplashLottie(onFinish: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         if (composition == null) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
         } else {
             LottieAnimation(
                 composition = composition,
