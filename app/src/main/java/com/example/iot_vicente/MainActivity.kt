@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
 import com.example.iot_vicente.nav.AppNavGraph
 import com.example.iot_vicente.ui.theme.Iot_vicenteTheme
 import kotlinx.coroutines.delay
@@ -20,21 +21,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // 2) Simular/realizar inicialización breve (1–2 s)
-        // Nota: launchWhenCreated está deprecado en versiones recientes de Lifecycle, 
-        // pero se puede usar lifecycleScope.launch directamente o repeatOnLifecycle.
-        // Usaremos lifecycleScope.launchWhenCreated como pediste, o su equivalente moderno si fuera necesario.
-        // Como launchWhenCreated puede marcarse deprecado, aquí uso launch para mayor compatibilidad futura,
-        // pero mantengo la lógica.
+        // Mantiene el splash nativo visible un poco más de tiempo
+        // Aunque ahora AppNavGraph tiene su propio splash, esto ayuda a que la carga inicial sea suave.
         lifecycleScope.launchWhenCreated {
             // Aquí podrías leer token, preferencias, etc.
-            delay(1200L)
+            delay(1000L)
             keepSplash = false
         }
 
         // 3) Contenido Compose
         setContent {
             Iot_vicenteTheme {
-                AppNavGraph() // Tu NavHost con rutas Splash->Home
+                // Creamos el NavController aquí para pasarlo al AppNavGraph
+                val navController = rememberNavController()
+                AppNavGraph(navController = navController) 
             }
         }
     }

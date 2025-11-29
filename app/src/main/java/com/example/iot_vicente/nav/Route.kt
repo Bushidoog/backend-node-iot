@@ -1,6 +1,11 @@
 package com.example.iot_vicente.nav
-sealed class Route(val path: String) {
-    data object Login : Route("login")
-    data object Register : Route("register")
-    data object Home : Route("home")
+
+enum class Route(val path: String) {
+    Login("login"),
+    Register("register"),
+    Home("home"),
+    UserMenu("user_menu"),
+    Sensors("sensors"),
+    Developer("developer"),
+    Recover("recover")
 }

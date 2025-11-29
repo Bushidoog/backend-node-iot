@@ -1,24 +1,24 @@
 package com.example.iot_vicente.data.repository
 
-import com.example.iot_vicente.data.remote.api.AuthApi
+import com.example.iot_vicente.data.remote.api.ApiClient
+import com.example.iot_vicente.data.remote.dto.ForgotPasswordRequest
+import com.example.iot_vicente.data.remote.dto.LoginRequest
 import com.example.iot_vicente.data.remote.dto.RegisterRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.iot_vicente.data.remote.dto.ResetPasswordRequest
 
-class AuthRepository(private val api: AuthApi) {
+class AuthRepository {
 
-    suspend fun register(name: String, email: String, password: String): Result<String> {
-        return try {
-            val body = RegisterRequest(name, email, password)
-            val response = api.register(body)
+    private val api = ApiClient.authApi
 
-            if (!response.success) {
-                return Result.failure(Exception(response.message))
-            }
+    suspend fun login(email: String, password: String) =
+        api.login(LoginRequest(email, password))
 
-            Result.success(response.message)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
+    suspend fun register(name: String, surname: String, email: String, password: String) =
+        api.register(RegisterRequest(name, surname, email, password))
+
+    suspend fun forgotPassword(email: String) =
+        api.forgotPassword(ForgotPasswordRequest(email))
+
+    suspend fun resetPassword(email: String, code: String, newPass: String) =
+        api.resetPassword(ResetPasswordRequest(email, code, newPass))
 }
