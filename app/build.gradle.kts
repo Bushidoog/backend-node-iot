@@ -58,7 +58,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("androidx.activity:activity-compose:1.9.2")
@@ -67,7 +66,6 @@ dependencies {
 // Compose
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.3")
 // Para manejar delay/cargas en Activity
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
@@ -76,5 +74,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    // Datastore Preferences (Faltaba esto, lo borraste al elegir 'todo izquierda')
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 }
