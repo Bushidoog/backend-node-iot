@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "iot_vicente"
+rootProject.name = "LC_App"
 include(":app")

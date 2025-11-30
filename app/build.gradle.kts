@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.iot_vicente"
+    namespace = "com.example.LC_App"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.iot_vicente"
+        applicationId = "com.example.LC_App"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
