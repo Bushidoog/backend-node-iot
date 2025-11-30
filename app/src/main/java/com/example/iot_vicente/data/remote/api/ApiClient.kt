@@ -16,4 +16,6 @@ object ApiClient {
 
     // Aquí conectamos las interfaces de Retrofit
     val authApi: AuthApi = retrofit.create(AuthApi::class.java)
+    val userApi: UserApi = retrofit.create(UserApi::class.java)
+    val iotApi: IotApi = retrofit.create(IotApi::class.java)
 }

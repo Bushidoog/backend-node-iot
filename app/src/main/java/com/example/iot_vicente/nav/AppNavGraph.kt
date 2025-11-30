@@ -26,7 +26,12 @@ import com.example.iot_vicente.screen.HomeScreen
 import com.example.iot_vicente.screen.LoginScreen
 import com.example.iot_vicente.screen.RecoverPasswordScreen
 import com.example.iot_vicente.screen.RegisterScreen
+import com.example.iot_vicente.screen.SensorsScreen
+import com.example.iot_vicente.screen.UserListScreen
+import com.example.iot_vicente.screen.UserMenuScreen
 import com.example.iot_vicente.viewmodel.AuthViewModel
+import com.example.iot_vicente.viewmodel.SensorsViewModel
+import com.example.iot_vicente.viewmodel.UserViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -75,15 +80,22 @@ fun AppNavGraph(
             HomeScreen(nav = navController)
         }
 
-        // MENÚ GESTIÓN DE USUARIOS (CRUD)
+        // MENÚ GESTIÓN DE USUARIOS
         composable(Route.UserMenu.path) {
-            // Cuando la tengamos:
-            // UserMenuScreen(nav = navController)
+             UserMenuScreen(nav = navController)
+        }
+
+        // LISTAR USUARIOS (CRUD)
+        composable(Route.UserList.path) {
+            val userVm: UserViewModel = viewModel()
+            UserListScreen(nav = navController, vm = userVm)
         }
 
         // DATOS DE SENSORES
         composable(Route.Sensors.path) {
-            // SensorsScreen(nav = navController)
+            // Se necesita instanciar el VM para manejar lógica de ampolleta/linterna y datos
+            val sensorsVm: SensorsViewModel = viewModel()
+            SensorsScreen(nav = navController, vm = sensorsVm)
         }
 
         // DATOS DEL DESARROLLADOR
