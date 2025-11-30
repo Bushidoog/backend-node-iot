@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.LC_App.viewmodel.SensorsViewModel
 import java.util.Locale
+import com.example.LC_App.R
 
 @Composable
 fun SensorsScreen(

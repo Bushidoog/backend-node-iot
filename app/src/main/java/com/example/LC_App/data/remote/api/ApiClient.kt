@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClient {
 
     // URL DEL SERVIDOR NODE
-    private const val BASE_URL = "http://10.0.2.2:3000/"
+    private const val BASE_URL = "http://52.86.54.96:3000/"
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.LC_App.nav.Route
-import com.example.LC_App.ui.theme.Iot_vicenteTheme
+import com.example.LC_App.ui.theme.LC_AppTheme
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -117,7 +117,7 @@ private fun getCurrentDateTimeString(): String {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    Iot_vicenteTheme {
+    LC_AppTheme() {
         HomeScreen(nav = rememberNavController())
     }
 }

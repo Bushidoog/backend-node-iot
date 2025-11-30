@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,7 +33,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.LC_App.R
 import com.example.LC_App.nav.Route
-import com.example.LC_App.ui.theme.Iot_vicenteTheme
+import com.example.LC_App.ui.theme.BluePrimary
+import com.example.LC_App.ui.theme.InputBackground
+import com.example.LC_App.ui.theme.LC_AppTheme
+import com.example.LC_App.ui.theme.TextBlack
+import com.example.LC_App.ui.theme.TextDarkGray
 import com.example.LC_App.viewmodel.AuthViewModel
 
 // ---------- UI PRINCIPAL ----------
@@ -59,7 +64,7 @@ fun LoginContent(
 
         // Logo
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = painterResource(id = R.drawable.lyclogo),
             contentDescription = "Logo",
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
@@ -79,7 +84,27 @@ fun LoginContent(
             value = user,
             onValueChange = onUserChange,
             label = { Text("Usuario / Email") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
 
@@ -90,7 +115,27 @@ fun LoginContent(
             value = pass,
             onValueChange = onPassChange,
             label = { Text("Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
@@ -229,7 +274,7 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun LoginContentPreview() {
-    Iot_vicenteTheme {
+    LC_AppTheme() {
         LoginContent(
             user = "demo@demo.cl",
             pass = "Demo123*",

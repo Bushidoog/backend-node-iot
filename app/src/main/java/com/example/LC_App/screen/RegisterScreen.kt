@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +28,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.LC_App.viewmodel.AuthViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.LC_App.ui.theme.BluePrimary
+import com.example.LC_App.ui.theme.InputBackground
+import com.example.LC_App.ui.theme.TextBlack
+import com.example.LC_App.ui.theme.TextDarkGray
 
 @Composable
 fun RegisterScreen(
@@ -138,7 +145,29 @@ fun RegisterScreen(
             value = name,
             onValueChange = { name = it },
             label = { Text("Nombre") },
-            modifier = Modifier.fillMaxWidth()
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+
+            shape = RoundedCornerShape(8.dp) // Bordes un poco más redondeados
         )
         Spacer(Modifier.height(8.dp))
 
@@ -146,7 +175,29 @@ fun RegisterScreen(
             value = surname,
             onValueChange = { surname = it },
             label = { Text("Apellido") },
-            modifier = Modifier.fillMaxWidth()
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+
+            shape = RoundedCornerShape(8.dp) // Bordes un poco más redondeados
         )
         Spacer(Modifier.height(8.dp))
 
@@ -154,7 +205,29 @@ fun RegisterScreen(
             value = phone,
             onValueChange = { phone = it },
             label = { Text("Teléfono (Opcional/No se guarda)") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+
+            shape = RoundedCornerShape(8.dp), // Bordes un poco más redondeados
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
         )
         Spacer(Modifier.height(8.dp))
@@ -163,7 +236,27 @@ fun RegisterScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
         Spacer(Modifier.height(8.dp))
@@ -172,7 +265,27 @@ fun RegisterScreen(
             value = pwd,
             onValueChange = { pwd = it },
             label = { Text("Contraseña") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
@@ -182,7 +295,27 @@ fun RegisterScreen(
             value = confirmPwd,
             onValueChange = { confirmPwd = it },
             label = { Text("Confirmar contraseña") },
-            modifier = Modifier.fillMaxWidth(),
+            // ---  VISUAL DE TEXTO  ---
+            colors = OutlinedTextFieldDefaults.colors(
+                // Texto ingresado (Negro fuerte)
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+
+                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray,
+
+                // Etiqueta (Label) "Correo..."
+                focusedLabelColor = BluePrimary,
+                unfocusedLabelColor = TextDarkGray,
+
+                // Fondo del campo (Blanco puro para contraste)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
@@ -206,11 +339,3 @@ fun RegisterScreen(
     }
 }
 
-// Opcional: para previsualización sin ViewModel real
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    val fakeNav = rememberNavController()
-    val fakeVm = AuthViewModel() // si tu VM requiere parámetros, elimina este preview
-    RegisterScreen(nav = fakeNav, vm = fakeVm)
-}
