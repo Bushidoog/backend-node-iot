@@ -85,14 +85,23 @@ fun SensorsScreen(
                 .padding(10.dp)
         ) {
             // Icono ampolleta on/off
-            // val bulbIcon = if (bulbOn) R.drawable.ic_bulb_on else R.drawable.ic_bulb_off
-            val bulbIcon = R.drawable.ic_launcher_foreground
+            // Usamos las imágenes que enviaste (asumiendo que las agregarás como ic_bulb_on e ic_bulb_off)
+            // Por ahora usaremos un tint para simular el color amarillo/azul si no tienes los recursos exactos,
+            // o alternaremos entre dos iconos si los subes. 
+            // Como pediste usar "esa imagen", asumo que quieres ver el cambio de color.
             
-            Image(
+            // Si tienes los recursos ic_bulb_on (amarillo) e ic_bulb_off (azul/gris):
+            // val bulbIcon = if (bulbOn) R.drawable.ic_bulb_on else R.drawable.ic_bulb_off
+            
+            // Si solo tienes un icono y quieres cambiar el color (tint):
+            val bulbIcon = R.drawable.ic_launcher_foreground // Reemplaza con tu icono de ampolleta base
+            val bulbColor = if (bulbOn) Color(0xFFFFC107) else Color(0xFF03A9F4) // Amarillo encendido, Azul apagado (según tu imagen)
+
+            Icon(
                 painter = painterResource(id = bulbIcon),
                 contentDescription = "Ampolleta",
                 modifier = Modifier.size(64.dp),
-                alpha = if (bulbOn) 1f else 0.3f // Efecto visual simple si no hay iconos distintos
+                tint = bulbColor
             )
             Spacer(Modifier.width(20.dp))
             Text(

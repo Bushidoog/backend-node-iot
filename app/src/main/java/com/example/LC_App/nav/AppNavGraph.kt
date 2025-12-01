@@ -25,6 +25,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.LC_App.R
+import com.example.LC_App.screen.DeveloperScreen
 import com.example.LC_App.screen.EditUserScreen
 import com.example.LC_App.screen.HomeScreen
 import com.example.LC_App.screen.LoginScreen
@@ -114,7 +115,7 @@ fun AppNavGraph(
 
         // DATOS DEL DESARROLLADOR
         composable(Route.Developer.path) {
-            // DeveloperScreen(nav = navController)
+            DeveloperScreen(nav = navController)
         }
     }
 }

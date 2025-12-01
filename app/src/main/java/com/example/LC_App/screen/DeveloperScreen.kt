@@ -3,6 +3,7 @@ package com.example.LC_App.screen
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -74,6 +75,9 @@ fun DeveloperScreen(nav: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f), // Importante para que ocupe el espacio restante
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(developers) { dev ->
@@ -94,7 +98,8 @@ fun DeveloperCard(dev: Developer) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White) // Asegurar fondo blanco para contraste
     ) {
         Row(
             modifier = Modifier
@@ -109,15 +114,16 @@ fun DeveloperCard(dev: Developer) {
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape)
+                    .background(Color.LightGray) // Fondo gris para el avatar si la imagen es transparente
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
-                Text(text = dev.name, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = dev.name, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Text(text = dev.role, color = Color.Gray, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = dev.institution, fontSize = 12.sp)
+                Text(text = dev.institution, fontSize = 12.sp, color = Color.DarkGray)
                 Text(text = dev.email, fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary)
                 
                 Spacer(modifier = Modifier.height(8.dp))
