@@ -16,17 +16,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.LC_App.data.remote.dto.UserDto
 import com.example.LC_App.viewmodel.UserViewModel
+import androidx.compose.ui.graphics.Color
+import com.example.LC_App.nav.Route
 
 @Composable
 fun UserListScreen(
     nav: NavController,
     vm: UserViewModel = viewModel()
 ) {
+    // IMPORTANTE: Usamos 'users' en lugar de 'userList' si ese era el problema.
+    // Verificamos cómo se llama en tu ViewModel.
     val users by vm.users.collectAsState()
     val loading by vm.isLoading.collectAsState()
     val error by vm.errorMessage.collectAsState()
     
     var searchText by remember { mutableStateOf("") }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var userToDelete by remember { mutableStateOf<UserDto?>(null) }
 
     // Cargar usuarios al inicio
     LaunchedEffect(Unit) {
@@ -36,6 +42,30 @@ fun UserListScreen(
     val filteredUsers = users.filter {
         it.name.contains(searchText, ignoreCase = true) ||
         it.email.contains(searchText, ignoreCase = true)
+    }
+    
+    if (showDeleteDialog && userToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Confirmar eliminación") },
+            text = { Text("¿Estás seguro de que deseas eliminar a ${userToDelete?.name}?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        userToDelete?.let { vm.deleteUser(it.id) }
+                        showDeleteDialog = false
+                        userToDelete = null
+                    }
+                ) {
+                    Text("Eliminar", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -51,7 +81,9 @@ fun UserListScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                 CircularProgressIndicator()
+            }
         } else if (error != null) {
             Text("Error: $error", color = MaterialTheme.colorScheme.error)
             Button(onClick = { vm.fetchUsers() }) {
@@ -62,8 +94,14 @@ fun UserListScreen(
                 items(filteredUsers) { user ->
                     UserItem(
                         user = user,
-                        onEdit = { /* TODO: Navegar a pantalla de edición */ },
-                        onDelete = { vm.deleteUser(user.id) }
+                        onEdit = { 
+                             // Navegar a la pantalla de edición pasando el ID
+                             nav.navigate(Route.EditUser.createRoute(user.id))
+                        },
+                        onDelete = { 
+                            userToDelete = user
+                            showDeleteDialog = true
+                        }
                     )
                 }
             }

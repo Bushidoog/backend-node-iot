@@ -15,14 +15,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.LC_App.R
+import com.example.LC_App.screen.EditUserScreen
 import com.example.LC_App.screen.HomeScreen
 import com.example.LC_App.screen.LoginScreen
 import com.example.LC_App.screen.RecoverPasswordScreen
@@ -90,6 +93,16 @@ fun AppNavGraph(
         composable(Route.UserList.path) {
             val userVm: UserViewModel = viewModel()
             UserListScreen(nav = navController, vm = userVm)
+        }
+        
+        // EDITAR USUARIO (Ruta dinámica con userId)
+        composable(
+            route = Route.EditUser.path,
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val userVm: UserViewModel = viewModel()
+            EditUserScreen(nav = navController, vm = userVm, userId = userId)
         }
 
         // DATOS DE SENSORES

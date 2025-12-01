@@ -1,12 +1,17 @@
 package com.example.LC_App.nav
 
-enum class Route(val path: String) {
-    Login("login"),
-    Register("register"),
-    Home("home"),
-    UserMenu("user_menu"),
-    UserList("user_list"), // Agregado para el listado de usuarios
-    Sensors("sensors"),
-    Developer("developer"),
-    Recover("recover")
+sealed class Route(val path: String) {
+    object Login : Route("login")
+    object Register : Route("register")
+    object Home : Route("home")
+    object UserMenu : Route("user_menu")
+    object UserList : Route("user_list")
+    object Sensors : Route("sensors")
+    object Developer : Route("developer")
+    object Recover : Route("recover")
+    
+    // Ruta dinámica para editar usuario
+    object EditUser : Route("edit_user/{userId}") {
+        fun createRoute(userId: Int) = "edit_user/$userId"
+    }
 }

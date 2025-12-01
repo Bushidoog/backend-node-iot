@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClient {
 
     // ¡RECUERDA USAR TU IP ELÁSTICA DE AWS AQUÍ!
-    private const val BASE_URL = "http://192.168.100.8:3000/"
+    private const val BASE_URL = "http://52.86.54.96:3000/"
 
     // Función para crear la API SIN seguridad (Login, Registro)
     val authApi: AuthApi by lazy {
