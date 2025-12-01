@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class SensorsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo = IotRepository()
+    private val repository = IotRepository(application.applicationContext)
     
     // Estado de sensores (Temperatura/Humedad)
     private val _sensorData = MutableStateFlow<SensorDto?>(null)
@@ -43,7 +43,7 @@ class SensorsViewModel(application: Application) : AndroidViewModel(application)
         sensorJob?.cancel()
         sensorJob = viewModelScope.launch {
             // Intervalo de 2 segundos como pide el ejemplo
-            repo.getSensorStream(2000L).collectLatest { result ->
+            repository.getSensorStream(2000L).collectLatest { result ->
                 result.onSuccess { 
                     _sensorData.value = it 
                 }

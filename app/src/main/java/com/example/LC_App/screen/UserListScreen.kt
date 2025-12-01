@@ -23,14 +23,14 @@ fun UserListScreen(
     vm: UserViewModel = viewModel()
 ) {
     val users by vm.users.collectAsState()
-    val loading by vm.loading.collectAsState()
-    val error by vm.error.collectAsState()
+    val loading by vm.isLoading.collectAsState()
+    val error by vm.errorMessage.collectAsState()
     
     var searchText by remember { mutableStateOf("") }
 
     // Cargar usuarios al inicio
     LaunchedEffect(Unit) {
-        vm.loadUsers()
+        vm.fetchUsers()
     }
 
     val filteredUsers = users.filter {
@@ -54,7 +54,7 @@ fun UserListScreen(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else if (error != null) {
             Text("Error: $error", color = MaterialTheme.colorScheme.error)
-            Button(onClick = { vm.loadUsers() }) {
+            Button(onClick = { vm.fetchUsers() }) {
                 Text("Reintentar")
             }
         } else {

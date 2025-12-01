@@ -1,14 +1,15 @@
 package com.example.LC_App.data.repository
 
+import android.content.Context
 import com.example.LC_App.data.remote.api.ApiClient
 import com.example.LC_App.data.remote.dto.SensorDto
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class IotRepository {
+class IotRepository (private val context: Context) {
 
-    private val api = ApiClient.iotApi
+    private val api = ApiClient.getAuthenticatedIotApi(context)
 
     // Función que emite valores cada cierto intervalo
     fun getSensorStream(intervalMs: Long): Flow<Result<SensorDto>> = flow {

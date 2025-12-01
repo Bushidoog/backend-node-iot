@@ -9,12 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Body
 
 interface UserApi {
-    @GET("api/users")
+    @GET("users")
     suspend fun getUsers(): Response<List<UserDto>>
 
-    @PUT("api/users/{id}")
+    @PUT("users/{id}")
     suspend fun updateUser(@Path("id") id: Int, @Body user: UserDto): Response<UserDto>
 
-    @DELETE("api/users/{id}")
+    @DELETE("users/{id}")
     suspend fun deleteUser(@Path("id") id: Int): Response<Unit>
 }

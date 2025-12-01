@@ -1,10 +1,11 @@
 package com.example.LC_App.data.repository
 
+import android.content.Context
 import com.example.LC_App.data.remote.api.ApiClient
 import com.example.LC_App.data.remote.dto.UserDto
 
-class UserRepository {
-    private val api = ApiClient.userApi
+class UserRepository(private val context: Context)  {
+    private val api = ApiClient.getAuthenticatedUserApi(context)
 
     suspend fun getUsers(): Result<List<UserDto>> {
         return try {
@@ -12,7 +13,7 @@ class UserRepository {
             if (response.isSuccessful) {
                 Result.success(response.body() ?: emptyList())
             } else {
-                Result.failure(Exception("Error al obtener usuarios: ${response.code()}"))
+                Result.failure(Exception("Error ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
