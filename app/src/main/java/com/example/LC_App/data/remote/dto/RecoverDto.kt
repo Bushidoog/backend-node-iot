@@ -1,5 +1,7 @@
 package com.example.LC_App.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class ForgotPasswordRequest(
     val email: String
 )
@@ -12,6 +14,7 @@ data class RecoverResponse(
 data class ResetPasswordRequest(
     val email: String,
     val code: String,
+    @SerializedName("newPassword")
     val newPass: String
 )
 

@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -196,6 +197,19 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
     val currentBackStackEntry = nav.currentBackStackEntry
     val savedStateHandle = currentBackStackEntry?.savedStateHandle
     val registerMsg = savedStateHandle?.get<String>("registerMessage")
+    val recoverMsg = savedStateHandle?.get<String>("loginMessage")
+
+    LaunchedEffect(registerMsg, recoverMsg) {
+        if (registerMsg != null) {
+            message = registerMsg
+            isError = false
+            savedStateHandle?.remove<String>("registerMessage")
+        } else if (recoverMsg != null) {
+            message = recoverMsg
+            isError = false
+            savedStateHandle?.remove<String>("loginMessage")
+        }
+    }
     if (registerMsg != null) {
         message = registerMsg
         isError = false          // es mensaje de éxito
