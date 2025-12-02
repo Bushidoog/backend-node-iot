@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,14 +33,13 @@ import com.example.LC_App.nav.Route
 
 @Composable
 fun UserMenuScreen(nav: NavController) {
-    
+
     var message by remember { mutableStateOf<String?>(null) }
 
-    // 🔹 Leer mensaje de éxito si volvemos del registro
     val currentBackStackEntry = nav.currentBackStackEntry
     val savedStateHandle = currentBackStackEntry?.savedStateHandle
     val registerMsg = savedStateHandle?.get<String>("registerMessage")
-    
+
     if (registerMsg != null) {
         message = registerMsg
         savedStateHandle.remove<String>("registerMessage")
@@ -52,9 +53,9 @@ fun UserMenuScreen(nav: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // Logo / Imagen
+        // Logo
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = painterResource(id = R.drawable.lyclogo), // Asegúrate de que este nombre sea correcto
             contentDescription = "Logo Gestión",
             modifier = Modifier.height(100.dp)
         )
@@ -70,36 +71,42 @@ fun UserMenuScreen(nav: NavController) {
 
         Spacer(Modifier.height(30.dp))
 
-        // Botón Ingresar Usuarios
+        // Botón Ingresar Usuarios (Ahora AZUL)
         Button(
             onClick = { nav.navigate(Route.Register.path) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                .height(55.dp), // Altura estándar de 55dp
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados modernos
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary // <--- EL CAMBIO CLAVE (Azul)
+            )
         ) {
             Text("INGRESAR USUARIOS", fontWeight = FontWeight.Bold)
         }
 
         Spacer(Modifier.height(20.dp))
 
-        // Botón Listar Usuarios
+        // Botón Listar Usuarios (Ahora AZUL)
         Button(
-            onClick = { nav.navigate(Route.UserList.path) }, 
+            onClick = { nav.navigate(Route.UserList.path) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF37474F))
+                .height(55.dp),
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados modernos
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary // <--- EL CAMBIO CLAVE (Azul)
+            )
         ) {
             Text("LISTAR USUARIOS", fontWeight = FontWeight.Bold)
         }
 
-        // Mensaje de éxito (si venimos de registrar usuario)
+        // Mensaje de éxito
         message?.let {
             Spacer(Modifier.height(20.dp))
             Text(
-                text = it, // "Registro exitoso"
-                color = Color(0xFF1B5E20), // Verde oscuro
+                text = it,
+                color = Color(0xFF1B5E20),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -110,5 +117,8 @@ fun UserMenuScreen(nav: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun UserMenuScreenPreview() {
-    UserMenuScreen(nav = rememberNavController())
+    // Necesitamos el tema para ver el color azul en el preview
+    com.example.LC_App.ui.theme.LC_AppTheme {
+        UserMenuScreen(nav = rememberNavController())
+    }
 }

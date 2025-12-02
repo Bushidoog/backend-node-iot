@@ -1,26 +1,16 @@
 package com.example.LC_App.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,44 +18,60 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.LC_App.R // <--- IMPORTANTE: Asegúrate que este import sea correcto
 import com.example.LC_App.nav.Route
 import com.example.LC_App.ui.theme.LC_AppTheme
 import kotlinx.coroutines.delay
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O) // Necesario para la hora exacta
 @Composable
 fun HomeScreen(nav: NavController) {
 
-    var currentDateTime by rememberSaveable { mutableStateOf(getCurrentDateTimeString()) }
+    // --- LÓGICA DEL RELOJ (Hora Chile) ---
+    var currentDateTime by remember { mutableStateOf("Cargando...") }
 
-    // Actualizar hora cada 1 segundo
     LaunchedEffect(Unit) {
         while (true) {
-            currentDateTime = getCurrentDateTimeString()
+            // Usamos ZonedDateTime para forzar la zona horaria de Chile
+            val zdt = ZonedDateTime.now(ZoneId.of("America/Santiago"))
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+            currentDateTime = zdt.format(formatter)
             delay(1000L)
         }
     }
 
+    // --- UI ---
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        // Usamos SpaceEvenly para distribuir mejor el espacio verticalmente
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
 
-        Text(
-            text = "Menú Principal", style = MaterialTheme.typography.headlineMedium
+        // 1. LOGO (Agregado aquí)
+        Image(
+            painter = painterResource(id = R.drawable.lyclogo), // Asegúrate de tener la imagen
+            contentDescription = "Logo Smart IoT",
+            modifier = Modifier.size(150.dp)
         )
 
-        Spacer(Modifier.height(12.dp))
+        // 2. TÍTULO
+        Text(
+            text = "Menú Principal",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
 
-        // Fecha y hora en tiempo real
+        // 3. TARJETA DE HORA
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0)) // Un gris muy suave
         ) {
             Text(
                 text = "Fecha y hora: $currentDateTime",
@@ -73,53 +79,59 @@ fun HomeScreen(nav: NavController) {
                     .padding(16.dp)
                     .fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = Color.Black
             )
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
-        // Botón CRUD de Usuarios
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { nav.navigate(Route.UserMenu.path) } // menú gestión usuarios
+        // 4. BOTONES (Agrupados)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("CRUD de Usuarios")
+            // Botón CRUD de Usuarios
+            MenuButtonMain(text = "CRUD de Usuarios") {
+                nav.navigate(Route.UserMenu.path)
+            }
+
+            // Botón Datos de Sensores
+            MenuButtonMain(text = "Ver datos de sensores") {
+                nav.navigate(Route.Sensors.path)
+            }
+
+            // Botón Datos del desarrollador
+            MenuButtonMain(text = "Datos del desarrollador") {
+                nav.navigate(Route.Developer.path)
+            }
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        // Botón Datos de Sensores
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { nav.navigate(Route.Sensors.path) }
-        ) {
-            Text("Ver datos de sensores")
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        // Botón Datos del desarrollador
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { nav.navigate(Route.Developer.path) }
-        ) {
-            Text("Datos del desarrollador")
-        }
+        // Espacio final para equilibrio
+        Spacer(Modifier.height(16.dp))
     }
 }
 
-// Función para obtener fecha/hora en formato requerido
-private fun getCurrentDateTimeString(): String {
-    val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-    return sdf.format(Date())
+// Componente auxiliar para que los botones se vean iguales y bonitos
+@Composable
+fun MenuButtonMain(text: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(55.dp),
+        shape = RoundedCornerShape(12.dp) // Bordes redondeados modernos
+    ) {
+        Text(text = text, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+    }
 }
 
 // Preview
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    LC_AppTheme() {
+    LC_AppTheme {
         HomeScreen(nav = rememberNavController())
     }
 }

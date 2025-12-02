@@ -11,12 +11,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.LC_App.data.remote.dto.UserDto
 import com.example.LC_App.viewmodel.UserViewModel
-import androidx.compose.ui.graphics.Color
 import com.example.LC_App.nav.Route
 
 @Composable
@@ -24,13 +26,13 @@ fun UserListScreen(
     nav: NavController,
     vm: UserViewModel = viewModel()
 ) {
-    // IMPORTANTE: Usamos 'users' en lugar de 'userList' si ese era el problema.
-    // Verificamos cómo se llama en tu ViewModel.
     val users by vm.users.collectAsState()
     val loading by vm.isLoading.collectAsState()
     val error by vm.errorMessage.collectAsState()
-    
+
     var searchText by remember { mutableStateOf("") }
+
+    // Estados para el diálogo de eliminación
     var showDeleteDialog by remember { mutableStateOf(false) }
     var userToDelete by remember { mutableStateOf<UserDto?>(null) }
 
@@ -39,25 +41,28 @@ fun UserListScreen(
         vm.fetchUsers()
     }
 
+    // Filtrado
     val filteredUsers = users.filter {
         it.name.contains(searchText, ignoreCase = true) ||
-        it.email.contains(searchText, ignoreCase = true)
+                (it.email.contains(searchText, ignoreCase = true))
     }
-    
+
+    // --- DIÁLOGO DE CONFIRMACIÓN ---
     if (showDeleteDialog && userToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Confirmar eliminación") },
             text = { Text("¿Estás seguro de que deseas eliminar a ${userToDelete?.name}?") },
             confirmButton = {
-                TextButton(
+                Button(
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)), // Rojo
                     onClick = {
                         userToDelete?.let { vm.deleteUser(it.id) }
                         showDeleteDialog = false
                         userToDelete = null
                     }
                 ) {
-                    Text("Eliminar", color = Color.Red)
+                    Text("Eliminar")
                 }
             },
             dismissButton = {
@@ -68,41 +73,66 @@ fun UserListScreen(
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    // --- UI PRINCIPAL ---
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally // <--- ESTO CENTRA LOS ELEMENTOS
+    ) {
+
+        // Título agregado
+        Text(
+            text = "Lista de Usuarios",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
         // Buscador
         OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
             label = { Text("Buscar usuario") },
             modifier = Modifier.fillMaxWidth(),
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            shape = MaterialTheme.shapes.medium
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
 
         if (loading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                 CircularProgressIndicator()
+                CircularProgressIndicator()
             }
         } else if (error != null) {
-            Text("Error: $error", color = MaterialTheme.colorScheme.error)
-            Button(onClick = { vm.fetchUsers() }) {
-                Text("Reintentar")
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Error: $error", color = MaterialTheme.colorScheme.error)
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { vm.fetchUsers() }) {
+                    Text("Reintentar")
+                }
             }
         } else {
-            LazyColumn {
-                items(filteredUsers) { user ->
-                    UserItem(
-                        user = user,
-                        onEdit = { 
-                             // Navegar a la pantalla de edición pasando el ID
-                             nav.navigate(Route.EditUser.createRoute(user.id))
-                        },
-                        onDelete = { 
-                            userToDelete = user
-                            showDeleteDialog = true
-                        }
-                    )
+            if (filteredUsers.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No hay usuarios encontrados", color = Color.Gray)
+                }
+            } else {
+                LazyColumn {
+                    items(filteredUsers) { user ->
+                        UserItem(
+                            user = user,
+                            onEdit = {
+                                // Asegúrate de tener esta ruta definida en tu Route.kt
+                                // nav.navigate(Route.EditUser.createRoute(user.id))
+                            },
+                            onDelete = {
+                                userToDelete = user
+                                showDeleteDialog = true
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -115,21 +145,27 @@ fun UserItem(user: UserDto, onEdit: () -> Unit, onDelete: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)) // Fondo gris suave
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${user.name} ${user.last_name}", style = MaterialTheme.typography.titleMedium)
-                Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
+                // --- AQUÍ QUITAMOS EL NULL ---
+                // Si surname es null, pone "" (vacío). El trim() quita espacios sobrantes.
+                // Verifica si en tu DTO se llama 'surname' o 'last_name'
+                val fullName = "${user.name} ${user.last_name ?: ""}".trim()
+
+                Text(text = fullName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(text = user.email, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
             }
             IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit, contentDescription = "Editar")
+                Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color(0xFFB00020))
             }
         }
     }
