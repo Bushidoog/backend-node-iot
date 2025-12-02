@@ -26,9 +26,3 @@ data class RegisterResponse(
         get() = error == null
 }
 
-data class UserDto(
-    val id: Int,
-    val name: String,
-    val last_name: String,
-    val email: String
-)

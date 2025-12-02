@@ -45,4 +45,32 @@ class UserRepository(private val context: Context)  {
             Result.failure(e)
         }
     }
+
+    // 1. Obtener usuario por ID
+    suspend fun getUserById(id: Int): Result<UserDto> {
+        return try {
+            val response = api.getUserById(id)
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Error 404: Usuario no encontrado"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // 2. Actualizar usuario
+    suspend fun updateUser(id: Int, user: UserDto): Result<Unit> {
+        return try {
+            val response = api.updateUser(id, user)
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error al actualizar: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -1,165 +1,192 @@
 package com.example.LC_App.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.LC_App.R // <--- IMPORTANTE: Tu R
 import com.example.LC_App.viewmodel.SensorsViewModel
-import java.util.Locale
-import com.example.LC_App.R
 
 @Composable
 fun SensorsScreen(
     nav: NavController,
     vm: SensorsViewModel = viewModel()
 ) {
-    val sensorData by vm.sensorData.collectAsState()
-    val bulbOn by vm.bulbOn.collectAsState()
-    val flashlightOn by vm.flashlightOn.collectAsState()
+    // Observamos los datos del ViewModel (simulados o reales)
+    // Asumiendo que tienes estos estados en tu VM. Si no, usa datos falsos por ahora.
+    val humidity = "31%"
+    val temperature = "27°"
+    var isLightOn by remember { mutableStateOf(false) } // Estado local para probar switch
+    var isFlashOn by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
+            .statusBarsPadding() // Respetar la cámara
             .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título y Logo
+
+        // 1. LOGO SUPERIOR (Opcional, como en tus otras pantallas)
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground), // Cambiar por logo AC
+            painter = painterResource(id = R.drawable.lyclogo), // Tu logo
             contentDescription = "Logo",
-            modifier = Modifier.size(100.dp)
+            modifier = Modifier.size(80.dp)
         )
-        Text("DATOS SENSORES", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // --- SECCIÓN SENSORES ---
+        Text(
+            text = "DATOS SENSORES",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        // 2. FILA DE SENSORES (Humedad y Temperatura)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            // Humedad
-            SensorItem(
-                // Asegúrate de tener iconos en drawable, si no, usa placeholders
-                iconRes = R.drawable.ic_launcher_foreground, // R.drawable.ic_humidity
-                label = "HUMEDAD",
-                value = sensorData?.let { String.format(Locale.US, "%.0f%%", it.humidity) } ?: "--%"
+            // Tarjeta Humedad
+            SensorCard(
+                title = "HUMEDAD",
+                value = humidity,
+                iconRes = R.drawable.ic_humidity, // <--- TU IMAGEN AQUÍ
+                valueColor = Color.Blue
             )
 
-            // Temperatura
-            val temp = sensorData?.temperature ?: 0.0
-            // Icono dinámico
-            // val tempIcon = if (temp > 20) R.drawable.ic_temp_high else R.drawable.ic_temp_low
-            val tempIcon = R.drawable.ic_launcher_foreground // Placeholder
-            
-            SensorItem(
-                iconRes = tempIcon,
-                label = "TEMPERATURA",
-                value = sensorData?.let { String.format(Locale.US, "%.0f°", it.temperature) } ?: "--°",
-                valueColor = if (temp > 20) Color(0xFFE65100) else Color(0xFF0277BD) // Naranja vs Azul
+            // Tarjeta Temperatura
+            SensorCard(
+                title = "TEMPERATURA",
+                value = temperature,
+                iconRes = R.drawable.ic_temperature, // <--- TU IMAGEN AQUÍ
+                valueColor = Color(0xFFFF6D00) // Naranja
             )
         }
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        // --- SECCIÓN ACTUADORES ---
-        
-        // Ampolleta (UI)
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { vm.toggleBulb() }
-                .padding(10.dp)
-        ) {
-            // Icono ampolleta on/off
-            // Usamos las imágenes que enviaste (asumiendo que las agregarás como ic_bulb_on e ic_bulb_off)
-            // Por ahora usaremos un tint para simular el color amarillo/azul si no tienes los recursos exactos,
-            // o alternaremos entre dos iconos si los subes. 
-            // Como pediste usar "esa imagen", asumo que quieres ver el cambio de color.
-            
-            // Si tienes los recursos ic_bulb_on (amarillo) e ic_bulb_off (azul/gris):
-            // val bulbIcon = if (bulbOn) R.drawable.ic_bulb_on else R.drawable.ic_bulb_off
-            
-            // Si solo tienes un icono y quieres cambiar el color (tint):
-            val bulbIcon = R.drawable.ic_launcher_foreground // Reemplaza con tu icono de ampolleta base
-            val bulbColor = if (bulbOn) Color(0xFFFFC107) else Color(0xFF03A9F4) // Amarillo encendido, Azul apagado (según tu imagen)
+        // 3. ACTUADORES (Lista vertical)
 
-            Icon(
-                painter = painterResource(id = bulbIcon),
-                contentDescription = "Ampolleta",
-                modifier = Modifier.size(64.dp),
-                tint = bulbColor
-            )
-            Spacer(Modifier.width(20.dp))
-            Text(
-                text = if (bulbOn) "Ampolleta encendida" else "Ampolleta apagada",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-
-        Spacer(Modifier.height(20.dp))
-
-        // Linterna (Hardware)
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { vm.toggleFlashlight() }
-                .padding(10.dp)
-        ) {
-            // Icono linterna
-            // val flashIcon = R.drawable.ic_flashlight
-            val flashIcon = R.drawable.ic_launcher_foreground
-            
-            Image(
-                painter = painterResource(id = flashIcon),
-                contentDescription = "Linterna",
-                modifier = Modifier.size(64.dp),
-                alpha = if (flashlightOn) 1f else 0.3f
-            )
-            Spacer(Modifier.width(20.dp))
-            Text(
-                text = if (flashlightOn) "Linterna activada" else "Linterna desactivada",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun SensorItem(iconRes: Int, label: String, value: String, valueColor: Color = Color.Blue) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = label,
-            modifier = Modifier.size(60.dp)
+        // Ampolleta
+        ActuatorRow(
+            title = if (isLightOn) "Ampolleta encendida" else "Ampolleta apagada",
+            isOn = isLightOn,
+            // Cambia el icono según si está prendida o apagada
+            iconRes = if (isLightOn) R.drawable.ic_light_on else R.drawable.ic_light_off,
+            onSwitchChange = { isLightOn = it } // Aquí llamarías a vm.toggleLight()
         )
-        Spacer(Modifier.height(4.dp))
-        Text(label, fontSize = 12.sp, color = Color.Gray)
-        Text(value, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = valueColor)
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Linterna
+        ActuatorRow(
+            title = if (isFlashOn) "Linterna activada" else "Linterna desactivada",
+            isOn = isFlashOn,
+            iconRes = R.drawable.ic_flashlight, // Tu imagen de linterna
+            onSwitchChange = { isFlashOn = it }
+        )
     }
 }
 
-@Preview(showBackground = true)
+// --- COMPONENTE 1: TARJETA DE SENSOR (Cuadrada) ---
 @Composable
-fun SensorsScreenPreview() {
-    // Mock ViewModel requiere inyección manual o mocking complejo, 
-    // mejor usar preview estático extrayendo contenido si fuera necesario.
-    // Aquí solo instanciamos para ver layout básico (puede fallar por context de VM)
-    // SensorsScreen(nav = rememberNavController())
+fun SensorCard(
+    title: String,
+    value: String,
+    iconRes: Int,
+    valueColor: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+            modifier = Modifier.size(110.dp) // Tamaño cuadrado
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = title,
+                    modifier = Modifier.size(50.dp), // Tamaño del icono
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = title, fontSize = 12.sp, color = Color.Gray)
+        Text(text = value, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = valueColor)
+    }
+}
+
+// --- COMPONENTE 2: FILA DE ACTUADOR (Interruptor) ---
+@Composable
+fun ActuatorRow(
+    title: String,
+    isOn: Boolean,
+    iconRes: Int,
+    onSwitchChange: (Boolean) -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Icono
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Texto
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+            }
+
+            // Interruptor (Switch)
+            Switch(
+                checked = isOn,
+                onCheckedChange = onSwitchChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    }
 }

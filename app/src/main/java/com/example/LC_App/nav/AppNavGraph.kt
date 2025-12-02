@@ -101,7 +101,7 @@ fun AppNavGraph(
             route = Route.EditUser.path,
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val userId = backStackEntry.arguments?.getInt("userId") ?: 0
             val userVm: UserViewModel = viewModel()
             EditUserScreen(nav = navController, vm = userVm, userId = userId)
         }

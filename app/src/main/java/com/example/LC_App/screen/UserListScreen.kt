@@ -1,5 +1,6 @@
 package com.example.LC_App.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -77,6 +78,8 @@ fun UserListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White) // Fondo blanco limpio
+            .statusBarsPadding()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally // <--- ESTO CENTRA LOS ELEMENTOS
     ) {
@@ -86,7 +89,7 @@ fun UserListScreen(
             text = "Lista de Usuarios",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp, top = 8.dp)
         )
 
         // Buscador
@@ -124,8 +127,7 @@ fun UserListScreen(
                         UserItem(
                             user = user,
                             onEdit = {
-                                // Asegúrate de tener esta ruta definida en tu Route.kt
-                                // nav.navigate(Route.EditUser.createRoute(user.id))
+                                nav.navigate(Route.EditUser.createRoute(user.id))
                             },
                             onDelete = {
                                 userToDelete = user
