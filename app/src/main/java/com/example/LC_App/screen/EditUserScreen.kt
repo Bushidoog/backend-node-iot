@@ -2,16 +2,19 @@ package com.example.LC_App.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp // Importante para el tamaño de fuente
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.LC_App.viewmodel.UserViewModel
 import com.example.LC_App.data.remote.dto.UserDto
+import com.example.LC_App.viewmodel.UserViewModel
 
 @Composable
 fun EditUserScreen(
@@ -19,78 +22,111 @@ fun EditUserScreen(
     userId: Int,
     vm: UserViewModel = viewModel()
 ) {
-    // 1. ESTADO: Observamos la variable 'user' del ViewModel
-    // Cuando el ViewModel termine de descargar, esta variable se actualizará sola.
     val userState by vm.user.collectAsState()
     val loading by vm.isLoading.collectAsState()
     val error by vm.errorMessage.collectAsState()
 
-    // 2. FORMULARIO: Variables locales para los campos de texto
     var name by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") } // Usamos lastName para evitar confusión
+    var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    // 3. CARGAR: Al entrar, le pedimos al ViewModel que busque el usuario
     LaunchedEffect(userId) {
-        if (userId != 0) {
-            vm.loadUserById(userId)
-        }
+        if (userId != 0) vm.loadUserById(userId)
     }
 
-    // 4. RELLENAR: Cuando 'userState' cambie (lleguen los datos), llenamos el formulario
     LaunchedEffect(userState) {
         userState?.let { user ->
             name = user.name
-            lastName = user.last_name ?: "" // Arreglo del null
+            lastName = user.last_name ?: ""
             email = user.email
         }
     }
 
-    // --- UI ---
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White) // Fondo blanco
-            .statusBarsPadding() // <--- ¡ESTO ARREGLA LA ALTURA!
+            .background(Color.White)
+            .statusBarsPadding()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Editar Usuario", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // Título en Negro fuerte
+        Text(
+            text = "Editar Usuario",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black // <--- Forzamos negro
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         if (loading) {
-            CircularProgressIndicator()
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         } else {
+            // Campo Nombre
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    // --- ARREGLO DE TEXTO CLARO ---
+                    focusedTextColor = Color.Black,   // Texto al escribir
+                    unfocusedTextColor = Color.Black, // Texto al salir
+                    cursorColor = Color.Black,        // Cursor
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = Color.DarkGray
+                )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
+            // Campo Apellido
             OutlinedTextField(
                 value = lastName,
                 onValueChange = { lastName = it },
                 label = { Text("Apellido") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    // --- ARREGLO DE TEXTO CLARO ---
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = Color.DarkGray
+                )
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
+            // Campo Email (Bloqueado)
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = false // Generalmente el email no se edita, o puedes dejarlo true
+                shape = RoundedCornerShape(12.dp),
+                enabled = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledContainerColor = Color(0xFFE0E0E0),
+                    disabledTextColor = Color.DarkGray, // Un gris oscuro legible
+                    disabledBorderColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // MENSAJE DE ERROR (Si hubo problema al cargar)
             if (error != null) {
                 Text(text = error ?: "", color = Color.Red)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -98,25 +134,25 @@ fun EditUserScreen(
 
             Button(
                 onClick = {
-                    // Preparamos el objeto con los datos nuevos
-                    // Nota: el ID y Password se mantienen o se manejan aparte
                     val updatedUser = UserDto(
                         id = userId,
                         name = name,
                         last_name = lastName,
                         email = email
                     )
-
-                    // Llamamos a actualizar
                     vm.updateUser(userId, updatedUser) {
-                        // Si sale bien (onSuccess), volvemos atrás
                         nav.popBackStack()
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
-                Text("Guardar Cambios")
+                Text("Guardar Cambios", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

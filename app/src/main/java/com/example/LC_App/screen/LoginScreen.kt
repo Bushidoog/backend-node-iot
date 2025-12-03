@@ -1,47 +1,34 @@
 package com.example.LC_App.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.LC_App.R
 import com.example.LC_App.nav.Route
+import com.example.LC_App.viewmodel.AuthViewModel
+// Asegúrate de que estos imports de tu tema sean correctos
+// Si te marca error en los colores, usa MaterialTheme.colorScheme.primary
 import com.example.LC_App.ui.theme.BluePrimary
 import com.example.LC_App.ui.theme.InputBackground
-import com.example.LC_App.ui.theme.LC_AppTheme
 import com.example.LC_App.ui.theme.TextBlack
 import com.example.LC_App.ui.theme.TextDarkGray
-import com.example.LC_App.viewmodel.AuthViewModel
 
-// ---------- UI PRINCIPAL ----------
+// ---------- UI PRINCIPAL (DISEÑO) ----------
 
 @Composable
 fun LoginContent(
@@ -60,129 +47,122 @@ fun LoginContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Logo
         Image(
             painter = painterResource(id = R.drawable.lyclogo),
             contentDescription = "Logo",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier.size(100.dp)
         )
 
         Spacer(Modifier.height(8.dp))
 
         Text(
-            "Bienvenido",
+            text = "Bienvenido",
             fontSize = 23.sp,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(24.dp))
 
-        // Usuario / Email
+        // Campo Usuario / Email
         OutlinedTextField(
             value = user,
             onValueChange = onUserChange,
             label = { Text("Usuario / Email") },
-            // ---  VISUAL DE TEXTO  ---
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             colors = OutlinedTextFieldDefaults.colors(
-                // Texto ingresado (Negro fuerte)
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground,
                 focusedTextColor = TextBlack,
                 unfocusedTextColor = TextBlack,
-
-                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
                 focusedBorderColor = BluePrimary,
-                unfocusedBorderColor = TextDarkGray,
-
-                // Etiqueta (Label) "Correo..."
-                focusedLabelColor = BluePrimary,
-                unfocusedLabelColor = TextDarkGray,
-
-                // Fondo del campo (Blanco puro para contraste)
-                focusedContainerColor = InputBackground,
-                unfocusedContainerColor = InputBackground
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // Contraseña
-        OutlinedTextField(
-            value = pass,
-            onValueChange = onPassChange,
-            label = { Text("Contraseña") },
-            // ---  VISUAL DE TEXTO  ---
-            colors = OutlinedTextFieldDefaults.colors(
-                // Texto ingresado (Negro fuerte)
-                focusedTextColor = TextBlack,
-                unfocusedTextColor = TextBlack,
-
-                // Bordes (Azul cuando escribes, Gris Oscuro cuando no)
-                focusedBorderColor = BluePrimary,
-                unfocusedBorderColor = TextDarkGray,
-
-                // Etiqueta (Label) "Correo..."
-                focusedLabelColor = BluePrimary,
-                unfocusedLabelColor = TextDarkGray,
-
-                // Fondo del campo (Blanco puro para contraste)
-                focusedContainerColor = InputBackground,
-                unfocusedContainerColor = InputBackground
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                unfocusedBorderColor = TextDarkGray
+            )
         )
 
         Spacer(Modifier.height(16.dp))
 
-        // Botón Ingresar
+        // Campo Contraseña
+        OutlinedTextField(
+            value = pass,
+            onValueChange = onPassChange,
+            label = { Text("Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = InputBackground,
+                unfocusedContainerColor = InputBackground,
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack,
+                focusedBorderColor = BluePrimary,
+                unfocusedBorderColor = TextDarkGray
+            )
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        // --- BOTÓN INGRESAR (CON ANIMACIÓN) ---
         Button(
             onClick = onLoginClick,
-            enabled = !loading,
-            modifier = Modifier.fillMaxWidth()
+            enabled = !loading, // Deshabilita click si carga
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = BluePrimary,
+                disabledContainerColor = BluePrimary.copy(alpha = 0.7f)
+            )
         ) {
-            Text(if (loading) "Cargando..." else "Ingresar")
+            if (loading) {
+                // Ruedita de carga blanca
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.5.dp
+                )
+            } else {
+                Text("Ingresar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
-        // Recuperar contraseña
-        TextButton(
-            onClick = onRecoverClick,
-            modifier = Modifier.align(Alignment.Start)
+        // Enlaces de Recuperar y Registro
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("¿Olvidaste tu contraseña?")
+            TextButton(onClick = onRecoverClick) {
+                Text("¿Olvidaste tu contraseña?", fontSize = 12.sp, color = BluePrimary)
+            }
+            TextButton(onClick = onRegisterClick) {
+                Text("Regístrate", fontSize = 12.sp, color = BluePrimary)
+            }
         }
 
-        // Ir a registro
-        TextButton(
-            onClick = onRegisterClick,
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text("¿No tienes cuenta? Regístrate")
-        }
-
-        // Mensajes (error / éxito)
-        message?.let {
-            Spacer(Modifier.height(12.dp))
+        // Mensaje de Error / Éxito
+        if (message != null) {
+            Spacer(Modifier.height(16.dp))
             Text(
-                text = it,
-                color = if (isError) Color.Red else Color(0xFF1B5E20), // verde oscuro para éxito
+                text = message,
+                color = if (isError) Color.Red else Color(0xFF1B5E20),
+                fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
         }
     }
 }
 
-// ---------- LÓGICA DE LOGIN ----------
+// ---------- LÓGICA DE NEGOCIO (VIEWMODEL) ----------
 
 @Composable
 fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
@@ -193,12 +173,13 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
     var isError by remember { mutableStateOf(false) }
     var loading by remember { mutableStateOf(false) }
 
-    // 🔹 Leer mensaje que viene desde RegisterScreen
+    // 🔹 Leer mensajes de otras pantallas (Registro o Recuperación)
     val currentBackStackEntry = nav.currentBackStackEntry
     val savedStateHandle = currentBackStackEntry?.savedStateHandle
     val registerMsg = savedStateHandle?.get<String>("registerMessage")
     val recoverMsg = savedStateHandle?.get<String>("loginMessage")
 
+    // Efecto para capturar mensajes al volver
     LaunchedEffect(registerMsg, recoverMsg) {
         if (registerMsg != null) {
             message = registerMsg
@@ -210,11 +191,6 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
             savedStateHandle?.remove<String>("loginMessage")
         }
     }
-    if (registerMsg != null) {
-        message = registerMsg
-        isError = false          // es mensaje de éxito
-        savedStateHandle.remove<String>("registerMessage")
-    }
 
     fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -223,28 +199,25 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
     fun doLogin() {
         message = null
 
-        // 1) Validar campos vacíos
+        // 1. Validaciones Locales
         if (user.isBlank() || pass.isBlank()) {
             message = "Campos obligatorios vacíos."
             isError = true
             return
         }
-
-        // 2) Validar formato de email
         if (!isValidEmail(user)) {
             message = "Formato de e-mail inválido."
             isError = true
             return
         }
-
-        // 3) Simular usuario bloqueado
+        // Simulación usuario bloqueado
         if (user.equals("blocked@demo.cl", ignoreCase = true)) {
             message = "Usuario bloqueado."
             isError = true
             return
         }
 
-        // 4) Llamada a ViewModel
+        // 2. Llamada al Backend
         loading = true
         vm.login(
             email = user,
@@ -253,7 +226,7 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
                 loading = false
                 message = "Login correcto."
                 isError = false
-                // Navegar al Home inmediatamente
+                // Navegar al Home
                 nav.navigate(Route.Home.path) {
                     popUpTo(Route.Login.path) { inclusive = true }
                 }
@@ -266,6 +239,7 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
         )
     }
 
+    // Renderizar UI
     LoginContent(
         user = user,
         pass = pass,
@@ -277,29 +251,8 @@ fun LoginScreen(nav: NavController, vm: AuthViewModel = viewModel()) {
         onLoginClick = { doLogin() },
         onRegisterClick = { nav.navigate(Route.Register.path) },
         onRecoverClick = {
-             // Navegar a pantalla recuperar (crear ruta si no existe)
-             nav.navigate("recover")
+            // Asegúrate de tener esta ruta en tu Route.kt
+            nav.navigate("recover_password")
         }
     )
-}
-
-// ---------- PREVIEW ----------
-
-@Preview(showBackground = true)
-@Composable
-fun LoginContentPreview() {
-    LC_AppTheme() {
-        LoginContent(
-            user = "demo@demo.cl",
-            pass = "Demo123*",
-            message = "Ejemplo de mensaje de error",
-            isError = true,
-            loading = false,
-            onUserChange = {},
-            onPassChange = {},
-            onLoginClick = {},
-            onRegisterClick = {},
-            onRecoverClick = {}
-        )
-    }
 }

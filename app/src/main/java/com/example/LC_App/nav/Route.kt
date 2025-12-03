@@ -9,6 +9,9 @@ sealed class Route(val path: String) {
     object Sensors : Route("sensors")
     object Developer : Route("developer")
     object Recover : Route("recover")
+
+    object RecoverPassword : Route("recover_password")
+
     
     // Ruta dinámica para editar usuario
     object EditUser : Route("edit_user/{userId}") {

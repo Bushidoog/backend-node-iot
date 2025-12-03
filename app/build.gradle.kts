@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.transportation.consumer)
+    implementation(libs.androidx.compose.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,5 +77,6 @@ dependencies {
 
     // Datastore Preferences (Faltaba esto, lo borraste al elegir 'todo izquierda')
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
 }

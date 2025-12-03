@@ -75,9 +75,8 @@ fun AppNavGraph(
         }
 
         // RECUPERAR CONTRASEÑA
-        composable(Route.Recover.path) {
-            val authVm: AuthViewModel = viewModel()
-            RecoverPasswordScreen(nav = navController, vm = authVm)
+        composable(route = Route.RecoverPassword.path) {
+            RecoverPasswordScreen(nav = navController)
         }
 
         // HOME / MENÚ PRINCIPAL

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -159,9 +161,19 @@ fun RecoverPasswordScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Ingrese su email") },
+                label = { Text("Ingresa tu Email") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+
+                // --- AGREGA ESTO A TODOS LOS CAMPOS DE ESTA PANTALLA ---
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             Spacer(Modifier.height(16.dp))
@@ -183,7 +195,17 @@ fun RecoverPasswordScreen(
                 onValueChange = { if (it.length <= 5) code = it },
                 label = { Text("Código (5 dígitos)") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+
+                // --- AGREGA ESTO A TODOS LOS CAMPOS DE ESTA PANTALLA ---
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
             Spacer(Modifier.height(8.dp))
 
@@ -192,8 +214,18 @@ fun RecoverPasswordScreen(
                 onValueChange = { newPass = it },
                 label = { Text("Nueva contraseña") },
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+
+                // --- AGREGA ESTO A TODOS LOS CAMPOS DE ESTA PANTALLA ---
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
             Spacer(Modifier.height(8.dp))
 
@@ -202,8 +234,18 @@ fun RecoverPasswordScreen(
                 onValueChange = { confirmPass = it },
                 label = { Text("Confirmar contraseña") },
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+
+                // --- AGREGA ESTO A TODOS LOS CAMPOS DE ESTA PANTALLA ---
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color(0xFFF5F5F5),
+                    unfocusedContainerColor = Color(0xFFF5F5F5),
+                    cursorColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             Spacer(Modifier.height(16.dp))

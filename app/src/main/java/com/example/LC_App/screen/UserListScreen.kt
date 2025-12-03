@@ -4,10 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+// --- AQUÍ ESTABAN LOS IMPORTS FALTANTES ---
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
+// ------------------------------------------
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -81,7 +84,7 @@ fun UserListScreen(
             .background(Color.White) // Fondo blanco limpio
             .statusBarsPadding()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally // <--- ESTO CENTRA LOS ELEMENTOS
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Título agregado
@@ -89,17 +92,29 @@ fun UserListScreen(
             text = "Lista de Usuarios",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
+            color = Color.Black,
             modifier = Modifier.padding(bottom = 16.dp, top = 8.dp)
         )
 
-        // Buscador
+        // --- BUSCADOR ---
         OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
             label = { Text("Buscar usuario") },
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            shape = MaterialTheme.shapes.medium
+            shape = RoundedCornerShape(12.dp),
+
+            // ESTILOS DE COLOR (Texto Negro / Fondo Gris)
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color(0xFFF5F5F5),
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                cursorColor = Color.Black,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = Color.Gray
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -148,20 +163,27 @@ fun UserItem(user: UserDto, onEdit: () -> Unit, onDelete: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)) // Fondo gris suave
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                // --- AQUÍ QUITAMOS EL NULL ---
-                // Si surname es null, pone "" (vacío). El trim() quita espacios sobrantes.
-                // Verifica si en tu DTO se llama 'surname' o 'last_name'
+                // Manejo de null en el apellido
                 val fullName = "${user.name} ${user.last_name ?: ""}".trim()
 
-                Text(text = fullName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(text = user.email, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                Text(
+                    text = fullName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = user.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.DarkGray
+                )
             }
             IconButton(onClick = onEdit) {
                 Icon(Icons.Default.Edit, contentDescription = "Editar", tint = MaterialTheme.colorScheme.primary)
